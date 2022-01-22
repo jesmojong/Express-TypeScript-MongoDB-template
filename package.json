@@ -4,10 +4,12 @@
   "description": "Express, TypeScript and MongoDB template that can be used to setup a NodeJS server quickly",
   "main": "server.js",
   "scripts": {
+    "cleanDB": "ts-node ./init/init.ts -r dotenv_config_path=./.env",
+    "init": "npm run cleanDB && npm run dev",
     "dev": "nodemon ./src/server.ts -L -r dotenv_config_path=./.env",
     "build": "tsc && node ./build/server.js",
     "testServer": "ts-node ./src/server.ts -r dotenv_config_path=./.test.env",
-    "test": "jest --config ./testing/jest.config.ts --detectOpenHandles"
+    "test": "ts-node ./init/init.ts -r dotenv_config_path=./.test.env && jest --config ./testing/jest.config.ts --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",
