@@ -33,9 +33,10 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-helper": "file:private_node_modules/express-helper-1.0.0.tgz",
+    "mongodb-helper": "file:private_node_modules/mongodb-helper-1.0.0.tgz",
     "express-rate-limit": "^6.1.0",
     "helmet": "^5.0.1",
-    "jsonwebtoken": "^8.5.1"
+    "mongodb": "^4.3.1"
   },
   "jest": {
     "testEnvironment": "node",

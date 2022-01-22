@@ -1,6 +1,8 @@
+import chalk from "chalk"
 import { Request, Response, NextFunction } from "express"
 import { sendError, HTTP_STATUS, HTTP_STATE } from 'express-helper'
 import { ApiErrorResponse, ApiException, BODY_NOT_PARSABLE, NOT_FOUND } from "../exceptions/exceptions"
+import { getLogRepository } from "../repositories/repos"
 
 export function bodyCheckMiddleWare(error: { expose: boolean, statusCode: number, status: number, body: string, type: string }, _request: Request, response: Response, next: NextFunction) {
   if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
@@ -14,7 +16,9 @@ export function notFoundMiddleware(_: Request, __: Response, next: NextFunction)
   return next(NOT_FOUND('Endpoint does not exist'))
 }
 
-export function errorHandlerMiddleware(error: any, _: Request, response: Response, __: NextFunction): void {
+export async function errorHandlerMiddleware(error: any, _: Request, response: Response, __: NextFunction): Promise<void> {
+  const logRepository = getLogRepository()
+
   let message: string
   let status: HTTP_STATE
 
@@ -32,8 +36,6 @@ export function errorHandlerMiddleware(error: any, _: Request, response: Respons
         }
       }
 
-      // TODO implement logger (database? log file?)
-
       const log: Log = {
         type: 'error',
         from: 'SERVER',
@@ -47,7 +49,8 @@ export function errorHandlerMiddleware(error: any, _: Request, response: Respons
         log.log.stack = error.error.stack
       }
 
-      console.log('LOG:', log)
+      await logRepository.addLog(log)
+      console.log(chalk.yellow('Log send to the database'))
     }
   } else {
     message = 'Something went wrong on the server...'

@@ -19,6 +19,8 @@ These files will contain variables that are used by the server to connect with t
 To do this create a **'.env'** file in the root directory where this README.md file is located. Inside this file you need to add the following variables:
 
 - PORT={ **PORT NUMBER THAT YOU WANT TO USE FOR THE SERVER. GENERALY THIS IS: 8080** }
+- DATABASE_URL={ **DATABASE CONNECTION URL. MOST OF THE TIME IT IS: mongodb://localhost:27017/** }
+- DATABASE_NAME={ **NAME OF THE DATABASE THAT WILL BE CREATED e.g. Sneakers-Database** }
 
 After the first file '.env' is setup repeat the same steps but with another file **'.test.env'**.
 This file is used by the tests so the different tests won't intervene with the database you use for developing.

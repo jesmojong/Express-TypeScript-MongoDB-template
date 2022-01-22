@@ -2,9 +2,13 @@ import chalk from 'chalk'
 import express, { Application } from 'express'
 import helmet from 'helmet'
 import { Server } from "http"
-import { env_variables } from './config'
+import { Db, MongoClient } from 'mongodb'
+import { awaitDatabaseConnection, env_variables } from './config'
 import { bodyCheckMiddleWare, errorHandlerMiddleware, notFoundMiddleware } from './middlewares/generalMiddlewares'
 import { rateLimiter } from './middlewares/rateLimitMiddleware'
+
+export let database: Db
+export let databaseClient: MongoClient
 
 // Boot express
 export function bootServer (): Promise<Server> {
@@ -12,38 +16,45 @@ export function bootServer (): Promise<Server> {
     try {
       console.log('Booting up the server')
 
-      const app: Application = express()
+      awaitDatabaseConnection.then(({ db, client }) => {
+        console.log(' Connected to the database!')
 
-      // is a set of middlewares that sets response headers to help prevent some well-known web vulnerabilities
-      app.use(helmet())
+        database = db
+        databaseClient = client
 
-      // set the rate limit middleware, if the requester has reached the rate limit, the request will end here and won't go further through the request chain.
-      app.use(rateLimiter)
+        const app: Application = express()
 
-      // first middleware in the request chain is the urencoded and parses form data (application/x-www-form-urlencoded)
-      app.use(express.urlencoded({ extended: false }))
+        // is a set of middlewares that sets response headers to help prevent some well-known web vulnerabilities
+        app.use(helmet())
 
-      // second middleware in the request chain is the JSON parser middleware. Parsed request body if the application/json Content-Type is set
-      app.use(express.json())
+        // set the rate limit middleware, if the requester has reached the rate limit, the request will end here and won't go further through the request chain.
+        app.use(rateLimiter)
 
-      // if the JSON parser fails due to an invalid JSON body this middleware catches it and returns an error response
-      app.use(bodyCheckMiddleWare)
+        // first middleware in the request chain is the urencoded and parses form data (application/x-www-form-urlencoded)
+        app.use(express.urlencoded({ extended: false }))
 
-      const router = require('./routes')
+        // second middleware in the request chain is the JSON parser middleware. Parsed request body if the application/json Content-Type is set
+        app.use(express.json())
 
-      // Add all the controllers to the request chain
-      router.routes(app)
+        // if the JSON parser fails due to an invalid JSON body this middleware catches it and returns an error response
+        app.use(bodyCheckMiddleWare)
 
-      // the second to middleware catches all requests that requested a non existing endpoint
-      // after all the routes have been checked for the endpoint and none match was found, the Not Found middleware is called
-      app.use(notFoundMiddleware)
+        const router = require('./routes')
 
-      // the last middleware in the request chain catches all thrown Errors in the routes, depending on the type of error an appropiate message will be returned to the client
-      app.use(errorHandlerMiddleware)
+        // Add all the controllers to the request chain
+        router.routes(app)
 
-      const server = app.listen(env_variables.PORT, () => {
-        console.log(`\nServer is listening on port ${chalk.green(env_variables.PORT)}`)
-        resolve(server)
+        // the second to middleware catches all requests that requested a non existing endpoint
+        // after all the routes have been checked for the endpoint and none match was found, the Not Found middleware is called
+        app.use(notFoundMiddleware)
+
+        // the last middleware in the request chain catches all thrown Errors in the routes, depending on the type of error an appropiate message will be returned to the client
+        app.use(errorHandlerMiddleware)
+
+        const server = app.listen(env_variables.PORT, () => {
+          console.log(`\nServer is listening on port ${chalk.green(env_variables.PORT)}`)
+          resolve(server)
+        })
       })
     } catch (e) {
       console.log(`${chalk.red("The server and it's endpoints are NOT exposed")}`)
