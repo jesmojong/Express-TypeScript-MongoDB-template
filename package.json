@@ -1,7 +1,7 @@
 {
-  "name": "Express-TypeScript-template",
+  "name": "Express-TypeScript-MongoDB-template",
   "version": "0.0.1",
-  "description": "Express and TypeScript template that can be used to setup a NodeJS server quickly",
+  "description": "Express, TypeScript and MongoDB template that can be used to setup a NodeJS server quickly",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon ./src/server.ts -L -r dotenv_config_path=./.env",
