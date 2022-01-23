@@ -21,6 +21,7 @@ export class ApiException extends ApiErrorResponse {
 }
 
 // Exceptions
+export const LOG_EXCEPTION = (error: Error) => new ApiException('SOmething went wrong with inserting the log', error)
 
 // Errors
 export const NOT_FOUND = (message: string) => new ApiErrorResponse(message, HTTP_STATUS.NOT_FOUND)

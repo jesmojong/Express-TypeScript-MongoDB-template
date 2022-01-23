@@ -20,6 +20,7 @@
     "@types/jsonwebtoken": "^8.5.5",
     "@types/node": "^16.10.1",
     "@types/supertest": "^2.0.11",
+    "@types/validator": "^13.7.1",
     "@types/wait-on": "^5.3.1",
     "jest": "^27.2.2",
     "jest-dev-server": "^6.0.3",
@@ -38,6 +39,7 @@
     "express-rate-limit": "^6.1.0",
     "helmet": "^5.0.1",
     "mongodb": "^4.3.1",
-    "mongodb-helper": "file:private_node_modules/mongodb-helper-1.0.0.tgz"
+    "mongodb-helper": "file:private_node_modules/mongodb-helper-1.0.0.tgz",
+    "validator": "^13.7.0"
   }
 }

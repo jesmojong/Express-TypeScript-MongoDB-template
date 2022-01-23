@@ -1,5 +1,6 @@
-import { COLLECTIONS } from "./collections"
 import Repository from "./repository"
+import { Log } from "../models/log"
+import { COLLECTIONS } from "./collections"
 
 export default class LogRepository extends Repository {
 
@@ -17,14 +18,5 @@ export default class LogRepository extends Repository {
 
   protected getCollectionName(): string {
     return COLLECTIONS.LOGS
-  }
-}
-
-export interface Log {
-  type: 'error' | 'warning' | 'info',
-  from: 'CLIENT' | 'SERVER',
-  createdAt: Date,
-  log: {
-    [key: string]: string|Date
   }
 }
