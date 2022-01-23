@@ -16,6 +16,7 @@ export function bootServer (): Promise<Server> {
     try {
       console.log('Booting up the server')
 
+      console.log(' Trying to connect to the database')
       awaitDatabaseConnection.then(({ db, client }) => {
         console.log(' Connected to the database!')
 
@@ -55,6 +56,9 @@ export function bootServer (): Promise<Server> {
           console.log(`\nServer is listening on port ${chalk.green(env_variables.PORT)}`)
           resolve(server)
         })
+      }).catch(e => {
+        // database connection could not be made, the server and it's endpoints won't be exposed
+        console.log(chalk.red('Could not connect to the database...\n  - Is the database running?\n  - Are the .env variables correct?'))
       })
     } catch (e) {
       console.log(`${chalk.red("The server and it's endpoints are NOT exposed")}`)
