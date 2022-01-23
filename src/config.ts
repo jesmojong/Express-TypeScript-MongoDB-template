@@ -17,7 +17,7 @@ const dbUrl = DATABASE_URL + DATABASE_NAME
 // function that finishes after the connection to the database has successfully been made or not
 export const awaitDatabaseConnection = new Promise<{ db: Db, client: MongoClient }>(async (resolve, reject) => {
   try {
-    const client = await connect(dbUrl, DATABASE_NAME)
+    const client = await connect(dbUrl)
 
     // connection successfully made
     resolve({ db: client.db(DATABASE_NAME), client })

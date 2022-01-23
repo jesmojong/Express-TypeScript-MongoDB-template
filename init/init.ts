@@ -7,7 +7,7 @@ const collections: Array<Collection> = [
 ];
 
 (async () => {
-  const client = await connect(env_variables.DATABASE.url, env_variables.DATABASE.name)
+  const client = await connect(env_variables.DATABASE.url)
 
   await init(client, env_variables.DATABASE.name, collections)
 
