@@ -45,7 +45,7 @@ export function bootServer (): Promise<Server> {
         // Add all the controllers to the request chain
         router.routes(app)
 
-        // the second to middleware catches all requests that requested a non existing endpoint
+        // the second to last middleware catches all requests that requested a non existing endpoint
         // after all the routes have been checked for the endpoint and none match was found, the Not Found middleware is called
         app.use(notFoundMiddleware)
 
