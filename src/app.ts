@@ -1,6 +1,6 @@
 import chalk from 'chalk'
-import express, { Application } from 'express'
 import helmet from 'helmet'
+import express, { Application } from 'express'
 import { Server } from "http"
 import { Db, MongoClient } from 'mongodb'
 import { awaitDatabaseConnection, env_variables } from './config'
