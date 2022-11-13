@@ -1,13 +1,14 @@
-import Repository from "./repository"
-import { Log } from "../models/log"
-import { COLLECTIONS } from "./collections"
+import Repository from './repository'
+import { COLLECTIONS } from './collections'
+import type { Log } from '../models/log'
+import type { InsertOneResult } from 'mongodb'
 
 export default class LogRepository extends Repository {
 
-  addLog (object: Log): Promise<boolean> {
-    return new Promise(async (resolve, reject) => {
+  addLog (object: Log): Promise<InsertOneResult> {
+    return new Promise((resolve, reject) => {
       try {
-        resolve((await this.collection.insertOne(object)).acknowledged)
+        resolve(this.collection.insertOne(object))
       } catch (e) {
         console.log(e)
         reject()

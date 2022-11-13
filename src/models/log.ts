@@ -2,7 +2,7 @@ export interface Log {
   type: 'error' | 'warning' | 'info',
   from: 'CLIENT' | 'SERVER',
   createdAt: Date,
-  log: any | {
+  log: unknown | {
     [key: string]: string|Date
   }
 }

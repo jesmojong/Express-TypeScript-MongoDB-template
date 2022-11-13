@@ -1,16 +1,27 @@
-import { env_variables } from "../../src/config"
-import superagent, { Response } from 'superagent'
+import { env_variables } from '../../src/config'
+import superagent from 'superagent'
+import { LoginRequest, SuccessLogin } from '../../src/models/authentication'
+import { HTTP_STATE } from '../../src/util/endpoint-util'
 
 type query = string | string[][] | Record<string, string> | URLSearchParams
-type CallbackHandler = (err: any, res: Response) => void
 
 export const request = {
-  get: (endpoint: string, queryParameters?: query, callback?: CallbackHandler) => superagent.get(createUrl(endpoint, queryParameters), callback),
-  post: (endpoint: string, queryParameters?: query, callback?: CallbackHandler) => superagent.post(createUrl(endpoint, queryParameters), callback),
-  head: (endpoint: string, queryParameters?: query, callback?: CallbackHandler) => superagent.head(createUrl(endpoint, queryParameters), callback),
-  put: (endpoint: string, queryParameters?: query, callback?: CallbackHandler) => superagent.put(createUrl(endpoint, queryParameters), callback),
-  patch: (endpoint: string, queryParameters?: query, callback?: CallbackHandler) => superagent.patch(createUrl(endpoint, queryParameters), callback),
-  delete: (endpoint: string, queryParameters?: query, callback?: CallbackHandler) => superagent.delete(createUrl(endpoint, queryParameters), callback),
+  get: (endpoint: string, expectedStatusCode: HTTP_STATE['code'], queryParameters?: query, accessToken?: string) => setMiddleware(superagent.get(createUrl(endpoint, queryParameters)), expectedStatusCode, accessToken),
+  post: (endpoint: string, expectedStatusCode: HTTP_STATE['code'], queryParameters?: query, accessToken?: string) => setMiddleware(superagent.post(createUrl(endpoint, queryParameters)), expectedStatusCode, accessToken),
+  head: (endpoint: string, expectedStatusCode: HTTP_STATE['code'], queryParameters?: query, accessToken?: string) => setMiddleware(superagent.head(createUrl(endpoint, queryParameters)), expectedStatusCode, accessToken),
+  put: (endpoint: string, expectedStatusCode: HTTP_STATE['code'], queryParameters?: query, accessToken?: string) => setMiddleware(superagent.put(createUrl(endpoint, queryParameters)), expectedStatusCode, accessToken),
+  patch: (endpoint: string, expectedStatusCode: HTTP_STATE['code'], queryParameters?: query, accessToken?: string) => setMiddleware(superagent.patch(createUrl(endpoint, queryParameters)), expectedStatusCode, accessToken),
+  delete: (endpoint: string, expectedStatusCode: HTTP_STATE['code'], queryParameters?: query, accessToken?: string) => setMiddleware(superagent.delete(createUrl(endpoint, queryParameters)), expectedStatusCode, accessToken),
+}
+
+function setMiddleware(req: superagent.Request, expectedStatusCode: HTTP_STATE['code'], accessToken?: string): superagent.Request {
+  req.ok((response: superagent.Response) => response.statusCode === expectedStatusCode)
+
+  if (typeof accessToken !== 'undefined') {
+    req.set('Authorization', `Bearer ${accessToken}`)
+  }
+
+  return req
 }
 
 function createUrl(endpoint: string, queryParameters?: string | string[][] | Record<string, string> | URLSearchParams): string {
@@ -21,4 +32,47 @@ function createUrl(endpoint: string, queryParameters?: string | string[][] | Rec
   }
 
   return url
+}
+
+export function login(login: Partial<LoginRequest> | undefined, expectedStatusCode: number = 200): superagent.Request {
+  return request
+    .post('/login', expectedStatusCode)
+    .send(login)
+}
+
+export async function getTokens(login: typeof ACCOUNTS['ADMIN'], expectedStatusCode: number = 200): Promise<SuccessLogin> {
+  if (typeof login.accessToken !== 'undefined' && typeof login.refreshToken !== 'undefined') {
+    return { accessToken: login.accessToken, refreshToken: login.refreshToken, role: login.role! }
+  }
+
+  const tokens = (await request
+    .post('/login', expectedStatusCode)
+    .send(login)).body as SuccessLogin
+
+  const obj = Object.values(ACCOUNTS).find(acc => acc.email === login.email)
+
+  if (typeof obj !== 'undefined') {
+    obj.accessToken = tokens.accessToken
+    obj.refreshToken = tokens.refreshToken
+    obj.role = tokens.role
+  }
+
+  return tokens
+}
+
+export async function refreshTokens<T>(refreshToken: string, expectedStatusCode: number = 200): Promise<{ response: superagent.Response, body: T }> {
+  const response = await request.post('/login/refresh', expectedStatusCode).send({ refreshToken })
+
+  return { response, body: response.body }
+}
+
+export const ACCOUNTS: Record<string, LoginRequest & Partial<SuccessLogin>> = {
+  ADMIN: {
+    email: 'adminUser@gmail.com',
+    password: 'adminUser'
+  },
+  STANDARD: {
+    email: 'user@gmail.com',
+    password: 'standardUser'
+  }
 }

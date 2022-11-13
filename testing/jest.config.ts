@@ -6,5 +6,6 @@ module.exports = {
   testEnvironment: 'node',
   preset: 'ts-jest',
   globalTeardown: '<rootDir>/teardown.ts',
-  coveragePathIgnorePatterns: ['/node_modules/']
+  coveragePathIgnorePatterns: ['/node_modules/'],
+  verbose: true
 }

@@ -22,6 +22,10 @@ To do this create a **'.env'** file in the root directory where this README.md f
 - DATABASE_URL={ **DATABASE CONNECTION URL. MOST OF THE TIME IT IS: mongodb://localhost:27017/** }
 - DATABASE_NAME={ **NAME OF THE DATABASE THAT WILL BE CREATED e.g. Sneakers-Database** }
 - DATABASE_CONNECTION_TIMEOUT={ **The amount of time in miliseconds where the server has to be connected to the database before a timeout error will be thrown, e.g. 10000 (10 seconds)** }
+- JWT_SECRET={ **Secret used for the authentication tokens** }
+- ACCESS_TOKEN_EXPIRATION={ **Expiration time in seconds used for the access tokens** }
+- REFRESH_TOKEN_EXPIRATION={ **Expiration time in seconds used for the refresh tokens** }
+- ID_TYPE={ **The type of ID's that are used in the database, it can be ObjectID or UUID** }
 
 After the first file '.env' is setup repeat the same steps but with another file **'.test.env'**.
 This file is used by the tests so the different tests won't intervene with the database you use for developing.

@@ -12,8 +12,8 @@ services:
       - ./:/usr/app # used for nodemon to work within the container
       - /usr/app/node_modules
     ports: # route a specific localhost port to the port used by the container to access the server via that port. (localhost port : container port)
-      - "8080:3200"
-    
+      - "8080:8080"
+
     ### BEGIN mongodb OPTIONS, comment out if not used
     depends_on: # this container depends on the mongodb container, so the mongodb container will run first before this one
       - mongodb
@@ -21,11 +21,8 @@ services:
       - mongodb # The hostport of the 'mongodb' container will be set in the 'mongodb' variable
     ### END mongodb OPTIONS, comment out if not used
     
-    env_file: # uses the local .env file
-      - .env
     environment: # set additional env variables
       - DATABASE_URL=mongodb://mongodb/ # comment out of no database is used
-      - PORT=3200
     networks: # add this container to the network 'app'
       - app
     command: npm run dev # command used the run this container

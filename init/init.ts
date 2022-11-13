@@ -3,7 +3,8 @@ import { init, Collection, connect } from 'mongodb-helper'
 import { env_variables } from '../src/config'
 
 const collections: Array<Collection> = [
-  { name: 'Logs', indexes: [], dataSourcePath: `${__dirname}/data/Logs.json` }
+  { name: 'Logs', indexes: [], dataSourcePath: `${__dirname}/data/Logs.json` },
+  { name: 'Users', indexes: [], dataSourcePath: `${__dirname}/data/Users.json` }
 ];
 
 (async () => {
@@ -14,4 +15,3 @@ const collections: Array<Collection> = [
   // close this script
   process.exit(0)
 })()
-

@@ -9,7 +9,7 @@ import { env_variables } from '../src/config'
 module.exports = async function globalSetup() {
   await setupDevServer({
     command: `npm run testServer`,
-    launchTimeout: 50000, // after 50 seconds of no response or anything the function fails
+    launchTimeout: 10000, // after 10 seconds of no response or anything the function fails
     debug: true // enable the logs from the server
   }) // boot the test server
 
@@ -18,7 +18,7 @@ module.exports = async function globalSetup() {
     // Every route is inaccessible and returns 404 if the server isn't fully booted yet
     await waitOn({
       resources: [
-        `http://localhost:${env_variables.PORT}/`
+        `http://localhost:${env_variables.PORT}/log`
       ],
       interval: 1000,
       delay: 1000,

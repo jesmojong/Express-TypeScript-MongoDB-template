@@ -1,13 +1,25 @@
-import LogRepository from "./logRepository"
+import LogRepository from './logRepository'
+import type Repository from './repository'
+import UsersRepository from './usersRepository'
 
-const repos: { LOG_REPO?: LogRepository } = {}
+type RepoNames = 'log'|'users'
+const repos: Partial<Record<RepoNames, Repository>> = {}
 
-export function getLogRepository(): LogRepository {
-  let i = repos.LOG_REPO
-  if (!i) {
-    i = new LogRepository()
-    repos.LOG_REPO = i
+function getRepo<T extends Repository>(repoName: RepoNames, repoType: any): T {
+  let repo = repos[repoName]
+
+  if (typeof repo === 'undefined') {
+    repo = new repoType()
+    repos[repoName] = repo
   }
 
-  return i
+  return repo as T
+}
+
+export function getLogRepository(): LogRepository {
+  return getRepo('log', LogRepository)
+}
+
+export function getUsersRepository(): UsersRepository {
+  return getRepo('users', UsersRepository)
 }

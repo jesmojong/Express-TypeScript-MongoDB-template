@@ -1,14 +1,29 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-unused-vars */
 import chalk from 'chalk'
 import helmet from 'helmet'
-import express, { Application } from 'express'
-import { Server } from "http"
-import { Db, MongoClient } from 'mongodb'
+import type { Application } from 'express'
+import express from 'express'
+import type { Server } from 'http'
+import type { Db, MongoClient } from 'mongodb'
 import { awaitDatabaseConnection, env_variables } from './config'
-import { bodyCheckMiddleWare, errorHandlerMiddleware, notFoundMiddleware } from './middlewares/generalMiddlewares'
+import { bodyCheckMiddleWare, errorHandlerMiddleware, escapeBodyMiddleware, notFoundMiddleware } from './middlewares/generalMiddlewares'
 import { rateLimiter } from './middlewares/rateLimitMiddleware'
+import type { TokenPayload } from './models/authentication'
 
 export let database: Db
 export let databaseClient: MongoClient
+
+/**
+ * used for TypeScript reasons to add the possible user property to the Request interface
+ */
+ declare global {
+  namespace Express {
+    interface Request {
+      user?: Omit<TokenPayload, 'type'>
+    }
+  }
+}
 
 // Boot express
 export function bootServer (): Promise<Server> {
@@ -40,6 +55,13 @@ export function bootServer (): Promise<Server> {
         // if the JSON parser fails due to an invalid JSON body this middleware catches it and returns an error response
         app.use(bodyCheckMiddleWare)
 
+        // escapes certain characters from (nested) values
+        app.use(escapeBodyMiddleware)
+
+        const authMiddleware = require('./middlewares/authorizationMiddleware')
+    
+        app.use(authMiddleware.default)
+
         const router = require('./routes')
 
         // Add all the controllers to the request chain
@@ -57,11 +79,12 @@ export function bootServer (): Promise<Server> {
           resolve(server)
         })
       }).catch(e => {
+        console.log(e)
         // database connection could not be made, the server and it's endpoints won't be exposed
         console.log(chalk.red('Could not connect to the database...\n  - Is the database running?\n  - Are the .env variables correct?'))
       })
     } catch (e) {
-      console.log(`${chalk.red("The server and it's endpoints are NOT exposed")}`)
+      console.log(`${chalk.red('The server and it\'s endpoints are NOT exposed')}`)
       reject(e)
     }
   })

@@ -1,8 +1,11 @@
-import chalk from "chalk"
-import { Request, Response, NextFunction } from "express"
-import { sendError, HTTP_STATUS, HTTP_STATE } from 'express-helper'
-import { ApiErrorResponse, ApiException, BODY_NOT_PARSABLE, NOT_FOUND } from "../exceptions/exceptions"
-import { getLogRepository } from "../repositories/repos"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import chalk from 'chalk'
+import type { Request, Response, NextFunction } from 'express'
+import { ApiErrorResponse, ApiException, BODY_NOT_PARSABLE, NOT_FOUND } from '../exceptions/exceptions'
+import { getLogRepository } from '../repositories/repos'
+import validator from 'validator'
+import type { HTTP_STATE} from '../util/endpoint-util'
+import { HTTP_STATUS, sendError } from '../util/endpoint-util'
 
 export function bodyCheckMiddleWare(error: { expose: boolean, statusCode: number, status: number, body: string, type: string }, _request: Request, response: Response, next: NextFunction) {
   if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
@@ -10,6 +13,40 @@ export function bodyCheckMiddleWare(error: { expose: boolean, statusCode: number
   }
 
   next()
+}
+
+export function escapeBodyMiddleware(request: Request, __: Response, next: NextFunction): void {
+  // escape strings
+  request.body = escape(request.body)
+  request.query = escape(request.query)
+
+  next()
+}
+
+function parseAccordingly(value: any): any {
+  if (typeof value === 'string') {
+    return validator.escape(value)
+  } else if (value instanceof Array) {
+    value.map(val => parseAccordingly(val))
+  }
+
+  return value
+}
+
+
+export function escape<T>(value: T): T {
+  if (typeof value !== 'undefined') {
+    if (typeof value === 'string' || value instanceof Array) {
+      value = parseAccordingly(value)
+    } else if (typeof value === 'object' && value != null) {
+      value = Object.entries(value).reduce((accumulator, [key, value]) => {
+        accumulator[key] = parseAccordingly(value)
+        return accumulator
+      }, {} as any)
+    }
+  }
+
+  return value
 }
 
 export function notFoundMiddleware(_: Request, __: Response, next: NextFunction): void {
