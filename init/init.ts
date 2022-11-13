@@ -1,5 +1,6 @@
 import 'dotenv/config' // used to expose the .env variables as soon as possible
-import { init, Collection, connect } from 'mongodb-helper'
+import type { Collection} from 'mongodb-helper'
+import { init, connect } from 'mongodb-helper'
 import { env_variables } from '../src/config'
 
 const collections: Array<Collection> = [

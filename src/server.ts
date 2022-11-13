@@ -1,11 +1,11 @@
 import 'dotenv/config'
 import chalk from 'chalk'
 
-import { Server } from 'http'
+import type { Server } from 'http'
 import { bootServer, databaseClient } from './app'
 
 let server: Server
-bootServer().then(s => server = s).catch(e => {
+bootServer().then(s => server = s).catch(() => {
   console.log('Something went wrong while booting up the server...')
 })
 
