@@ -2,11 +2,7 @@
   "_id": "a5d24601-f9ad-46e5-ae87-a3bfd9cf04cf",
   "email": "adminUser@gmail.com",
   "password": "$2b$10$v1MiKY81J8ex5Z2Q6KV4Z.lsDRxJbNrJx7bi410VUEk6toRJAFjVS",
-  "role": "admin",
-  "tokens": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJhNWQyNDYwMS1mOWFkLTQ2ZTUtYWU4Ny1hM2JmZDljZjA0Y2YiLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYXQiLCJpYXQiOjE2Njc2MDkwOTEsImV4cCI6MTY2NzYxMjY5MX0.pLbXolngb0A2w3xCGnB9qG2RxXvIjsuxv_vgtNeG_sM",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJhNWQyNDYwMS1mOWFkLTQ2ZTUtYWU4Ny1hM2JmZDljZjA0Y2YiLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoicnQiLCJpYXQiOjE2Njc2MDkwOTEsImV4cCI6MTY2ODIxMzg5MX0.gC-martwRNtRi7cuC6JbzMqMGZNQ-SQ8bhYOrhSSPpg"
-  }
+  "role": "admin"
 },{
   "_id": "a93d3a6e-1590-4bbf-a8b9-676f38af33ed",
   "email": "user@gmail.com",
@@ -15,9 +11,5 @@
   "housenumber": 4,
   "city": "Amsterdam",
   "password": "$2b$10$K7Z6sn8DDrN/Cu1RHoCdXee/4IhcmdCfM/ghmWJWZBr76raR07PVW",
-  "role": "user",
-  "tokens": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJhOTNkM2E2ZS0xNTkwLTRiYmYtYThiOS02NzZmMzhhZjMzZWQiLCJyb2xlIjoidXNlciIsInR5cGUiOiJhdCIsImlhdCI6MTY2NzYwOTEzOCwiZXhwIjoxNjY3NjEyNzM4fQ.ghrjgCqyLsbl6vDlG2jv9M4agAtdqjHnm07UJpAZvBE",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJhOTNkM2E2ZS0xNTkwLTRiYmYtYThiOS02NzZmMzhhZjMzZWQiLCJyb2xlIjoidXNlciIsInR5cGUiOiJydCIsImlhdCI6MTY2NzYwOTEzOCwiZXhwIjoxNjY4MjEzOTM4fQ.n9dAwqsTgl-XtKjbZYNOLxaoWbGbDNAkQoHol49HCc4"
-  }
+  "role": "user"
 }]
